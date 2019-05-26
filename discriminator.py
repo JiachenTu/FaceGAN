@@ -3,6 +3,15 @@ import tensorflow as tf
 from ops import *
 from tensorflow.layers import batch_normalization
 
+
+from keras.layers import Activation
+from keras.layers.advanced_activations import LeakyReLU
+from keras.layers.convolutional import Conv2D
+from keras.layers.core import Dense, Flatten
+from keras.layers.normalization import BatchNormalization
+
+
+
 class Discriminator:
     def __init__(self, img_shape):
         _, _, channels = img_shape
@@ -24,7 +33,39 @@ class Discriminator:
             self.b5 = init_bias([1])
 
 
+
     def forward(self, X, momentum=0.5):
+        n_layers, use_sigmoid = 6, False
+        ndf = 64
+        x = Conv2D(filters=ndf, kernel_size=(4, 4), strides=2, padding='same')(X)
+        x = LeakyReLU(0.2)(x)
+
+        nf_mult, nf_mult_prev = 1, 1
+        for n in range(n_layers):
+            nf_mult_prev, nf_mult = nf_mult, min(2**n, 8)
+            x = Conv2D(filters=ndf*nf_mult, kernel_size=(4, 4), strides=2, padding='same')(x)
+            x = BatchNormalization()(x)
+            x = LeakyReLU(0.2)(x)
+
+        nf_mult_prev, nf_mult = nf_mult, min(2**n_layers, 8)
+        x = Conv2D(filters=ndf*nf_mult, kernel_size=(4, 4), strides=1, padding='same')(x)
+        x = BatchNormalization()(x)
+        x = LeakyReLU(0.2)(x)
+
+        x = Conv2D(filters=1, kernel_size=(4, 4), strides=1, padding='same')(x)
+        if use_sigmoid:
+            x = Activation('sigmoid')(x)
+
+        x = Flatten()(x)
+        x = Dense(1024, activation='tanh')(x)
+        x = Dense(1, activation='sigmoid')(x)
+
+        logits = tf.nn.bias_add(x, self.b5)
+        return logits
+
+
+    ###simpler DisCriminator
+    def forward2(self, X, momentum=0.5):
         # 1th layer
         z = conv2d(X,self.W1,[1,2,2,1],padding="SAME")  #Size 14,14,64
         #add bias

@@ -6,10 +6,11 @@ import os
 from generator import Generator
 from discriminator import Discriminator
 from keras.preprocessing import image
+import cv2
 
 
 class DCGAN:
-    def __init__(self, img_shape, sample_folder_name, iterations=50000, lr_gen=0.0001, lr_dc=0.00005, z_shape=100, batch_size=64 , beta1=0.7, sample_interval=1000):
+    def __init__(self, img_shape, sample_folder_name, iterations=15000, lr_gen=0.0001, lr_dc=0.00005, z_shape=100, batch_size=64 , beta1=0.7, sample_interval=1000):
 
         #Create sample folder
         if not os.path.exists(f"{sample_folder_name}/"):
@@ -116,7 +117,9 @@ class DCGAN:
 
     def generate_sample(self, iteration):
         # 5 samples per IMG
-        c,r = 5,5
+        c,r = 5, 5
+
+
         # New input for sample, 5*5 = 25 IMGs
         z = np.random.uniform(-1,1,(25,self.z_shape))
         imgs = self.sess.run(self.gen_out, feed_dict={self.phZ:z})
@@ -124,6 +127,8 @@ class DCGAN:
 
         #Scale back to values (0,1), currently (-1,1)
         imgs = imgs*0.5+0.5
+
+        imgs = cv2.cvtColor(imgs, cv2.COLOR_BGR2RGB)
 
         fig,axs = plt.subplots(c,r)
         count = 0
