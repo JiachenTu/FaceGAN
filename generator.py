@@ -6,7 +6,7 @@ from tensorflow.keras.layers import UpSampling2D
 
 class Generator:
     def __init__(self):
-        self.layer_sizes = [512,256,128,64,32,3]
+        self.layer_sizes = [1024,512,256,128,64,3]
         with tf.variable_scope('g'):
             print("Initializing generator weights")
             # 100 = z input shape
@@ -22,32 +22,32 @@ class Generator:
         z = tf.nn.leaky_relu(z)
         #Reshape to 4d tensor
         z = tf.reshape(z,[-1,4,4,self.layer_sizes[0]])
-        #4,4,512
+        #4,4
 
         #Upsampling to increase image size
         z = UpSampling2D()(z) #keras
         z = conv2d(z,self.W2,[1,1,1,1],padding="SAME")
         z = batch_normalization(z,momentum=momentum)
         z = tf.nn.leaky_relu(z)
-        #8,8,256
+        #8,8
 
         z = UpSampling2D()(z) #keras
         z = conv2d(z,self.W3,[1,1,1,1],padding="SAME")
         z = batch_normalization(z,momentum=momentum)
         z = tf.nn.leaky_relu(z)
-        #16,16,128
+        #16,16
 
         z = UpSampling2D()(z) #keras
         z = conv2d(z,self.W4,[1,1,1,1],padding="SAME")
         z = batch_normalization(z,momentum=momentum)
         z = tf.nn.leaky_relu(z)
-        #32,32,64
+        #32,32
 
         z = UpSampling2D()(z) #keras
         z = conv2d(z,self.W5,[1,1,1,1],padding="SAME")
         z = batch_normalization(z,momentum=momentum)
         z = tf.nn.leaky_relu(z)
-        #64,64,32
+        #64,64
 
 
         z = conv2d(z,self.W6,[1,1,1,1],padding="SAME")
