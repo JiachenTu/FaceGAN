@@ -28,7 +28,7 @@ class Generator:
         latent_size         = None         # Dimensionality of the latent vectors. None = min(fmap_base, fmap_max).
         normalize_latents   = True         # Normalize latent vectors before feeding them to the network?
         use_wscale          = True         # Enable equalized learning rate?
-        use_pixelnorm       = False        # Enable pixelwise feature vector normalization?
+        use_pixelnorm       = True         # Enable pixelwise feature vector normalization?
         pixelnorm_epsilon   = 1e-8         # Constant epsilon for pixelwise feature vector normalization.
         use_leakyrelu       = True         # True = leaky ReLU, False = ReLU.
         dtype               = 'float32'    # Data type to use for activations and outputs.
@@ -72,7 +72,7 @@ class Generator:
                 return x
         def torgb(x, res): # res = 2..resolution_log2
             lod = resolution_log2 - res
-            with tf.variable_scope('ToRGB_lod%d_%d' % (lod,res)):
+            with tf.variable_scope('ToRGB_lod%d' % lod):
                 return apply_bias(conv2d(x, fmaps=num_channels, kernel=1, gain=1, use_wscale=use_wscale))
 
         # Linear structure: simple but inefficient.
