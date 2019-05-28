@@ -20,8 +20,7 @@ class Generator:
 
     def forward(self, X, momentum=0.5):
         latents_in = X                          # First input: Latent vectors [minibatch, latent_size].
-
-        labels_in           = None         # Second input: Labels [minibatch, label_size].
+        labels_in           = tf.placeholder(tf.float32, [None,0])         # Second input: Labels [minibatch, label_size].
         num_channels        = 3            # Number of output color channels. Overridden based on dataset.
         resolution          = 32           # Output resolution. Overridden based on dataset.
         label_size          = 0            # Dimensionality of the labels, 0 if no labels. Overridden based on dataset.
