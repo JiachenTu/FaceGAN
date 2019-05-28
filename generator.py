@@ -72,7 +72,7 @@ class Generator:
                 return x
         def torgb(x, res): # res = 2..resolution_log2
             lod = resolution_log2 - res
-            with tf.variable_scope('ToRGB_lod%d' % lod):
+            with tf.variable_scope('ToRGB_lod%d_%d' % (lod,res)):
                 return apply_bias(conv2d(x, fmaps=num_channels, kernel=1, gain=1, use_wscale=use_wscale))
 
         # Linear structure: simple but inefficient.
