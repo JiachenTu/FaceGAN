@@ -10,7 +10,7 @@ import cv2
 
 
 class DCGAN:
-    def __init__(self, img_shape, sample_folder_name, iterations=5000, lr_gen=0.0001, lr_dc=0.00005, z_shape=512, batch_size=64 , beta1=0.7, sample_interval=1000):
+    def __init__(self, img_shape, sample_folder_name, iterations=15000, lr_gen=0.0001, lr_dc=0.00005, z_shape=100, batch_size=64 , beta1=0.7, sample_interval=1000):
 
         #Create sample folder
         if not os.path.exists(f"{sample_folder_name}/"):
@@ -35,7 +35,7 @@ class DCGAN:
         nm_imgs_train = nm_imgs[:Ntrain]
         ## name of the jpg files for the testing data
         nm_imgs_test  = nm_imgs[Ntrain:Ntrain + Ntest]
-        img_shape     = (32, 32, 3)
+        img_shape     = (64, 64, 3)
 
 
         X_train = []
@@ -99,7 +99,7 @@ class DCGAN:
             batch_Z = np.random.uniform(-1,1,(self.batch_size,self.z_shape))
 
             #Train D and store dc loss
-            batch_X = batch_X.reshape([-1,32,32,self.channels])
+            batch_X = batch_X.reshape([-1,64,64,self.channels])
             _, d_loss = self.sess.run([self.dc_train,self.dc_loss],feed_dict={self.phX:batch_X,self.phZ:batch_Z})
 
             #Create new batch for G
@@ -146,6 +146,6 @@ class DCGAN:
 
 
 if __name__ == '__main__':
-    img_shape = (32,32,3)
+    img_shape = (64,64,3)
     dcgan = DCGAN(img_shape,"samples")
     dcgan.train()
