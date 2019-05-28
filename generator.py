@@ -20,10 +20,8 @@ class Generator:
 
     def forward(self, X, momentum=0.5):
         latents_in = X                          # First input: Latent vectors [minibatch, latent_size].
-        labels_in           = tf.placeholder(tf.float32, [None,0])         # Second input: Labels [minibatch, label_size].
         num_channels        = 3            # Number of output color channels. Overridden based on dataset.
         resolution          = 32           # Output resolution. Overridden based on dataset.
-        label_size          = 0            # Dimensionality of the labels, 0 if no labels. Overridden based on dataset.
         fmap_base           = 8192         # Overall multiplier for the number of feature maps.
         fmap_decay          = 1.0          # log2 feature map reduction when doubling the resolution.
         fmap_max            = 512          # Maximum number of feature maps in any layer.
@@ -47,8 +45,7 @@ class Generator:
         act = leaky_relu if use_leakyrelu else tf.nn.relu
 
         latents_in.set_shape([None, latent_size])
-        labels_in.set_shape([None, label_size])
-        combo_in = tf.cast(tf.concat([latents_in, labels_in], axis=1), dtype)
+        combo_in = tf.cast(latents_in, dtype)
         lod_in = tf.cast(tf.get_variable('lod', initializer=np.float32(0.0), trainable=False), dtype)
 
         # Building blocks.
