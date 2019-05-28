@@ -33,7 +33,7 @@ class Generator:
         use_leakyrelu       = True         # True = leaky ReLU, False = ReLU.
         dtype               = 'float32'    # Data type to use for activations and outputs.
         fused_scale         = True         # True = use fused upscale2d + conv2d, False = separate upscale2d layers.
-        structure           = None         # 'linear' = human-readable, 'recursive' = efficient, None = select automatically.
+        structure           = 'recursive'         # 'linear' = human-readable, 'recursive' = efficient, None = select automatically.
         is_template_graph   = False        # True = template graph constructed by the Network class, False = actual evaluation.
 
         resolution_log2 = int(np.log2(resolution))
