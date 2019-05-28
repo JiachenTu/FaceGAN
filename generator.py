@@ -6,7 +6,7 @@ from tensorflow.keras.layers import UpSampling2D
 
 class Generator:
     def __init__(self):
-        self.layer_sizes = [1024,512,256,128,64,32,16,3]
+        self.layer_sizes = [2048,1024,512,256,128,64,32,16,8,3]
         with tf.variable_scope('g'):
             print("Initializing generator weights")
             # 100 = z input shape
@@ -18,6 +18,8 @@ class Generator:
             self.W6 = init_weights([3,3,self.layer_sizes[4], self.layer_sizes[5]])
             self.W7 = init_weights([3,3,self.layer_sizes[5], self.layer_sizes[6]])
             self.W8 = init_weights([3,3,self.layer_sizes[6], self.layer_sizes[7]])
+            self.W9 = init_weights([3,3,self.layer_sizes[7], self.layer_sizes[8]])
+            self.W10 = init_weights([3,3,self.layer_sizes[8], self.layer_sizes[9]])
 
     def forward(self, X, momentum=0.5):
         z = tf.matmul(X,self.W1)
@@ -26,40 +28,48 @@ class Generator:
         z = tf.reshape(z,[-1,4,4,self.layer_sizes[0]])
         #4,4
 
-        #Upsampling to increase image size
-        z = UpSampling2D()(z) #keras
         z = conv2d(z,self.W2,[1,1,1,1],padding="SAME")
         z = batch_normalization(z,momentum=momentum)
         z = tf.nn.leaky_relu(z)
-        #8,8
 
+        #Upsampling to increase image size
         z = UpSampling2D()(z) #keras
         z = conv2d(z,self.W3,[1,1,1,1],padding="SAME")
         z = batch_normalization(z,momentum=momentum)
         z = tf.nn.leaky_relu(z)
-        #16,16
+        #8,8
 
-        z = UpSampling2D()(z) #keras
         z = conv2d(z,self.W4,[1,1,1,1],padding="SAME")
         z = batch_normalization(z,momentum=momentum)
         z = tf.nn.leaky_relu(z)
-        #32,32
 
         z = UpSampling2D()(z) #keras
         z = conv2d(z,self.W5,[1,1,1,1],padding="SAME")
         z = batch_normalization(z,momentum=momentum)
         z = tf.nn.leaky_relu(z)
-        #64,64
+        #16,16
 
+        z = UpSampling2D()(z) #keras
         z = conv2d(z,self.W6,[1,1,1,1],padding="SAME")
         z = batch_normalization(z,momentum=momentum)
         z = tf.nn.leaky_relu(z)
+        #32,32
+
+        z = UpSampling2D()(z) #keras
         z = conv2d(z,self.W7,[1,1,1,1],padding="SAME")
+        z = batch_normalization(z,momentum=momentum)
+        z = tf.nn.leaky_relu(z)
+        #64,64
+
+        z = conv2d(z,self.W8,[1,1,1,1],padding="SAME")
+        z = batch_normalization(z,momentum=momentum)
+        z = tf.nn.leaky_relu(z)
+        z = conv2d(z,self.W9,[1,1,1,1],padding="SAME")
         z = batch_normalization(z,momentum=momentum)
         z = tf.nn.leaky_relu(z)
 
 
-        z = conv2d(z,self.W8,[1,1,1,1],padding="SAME")
+        z = conv2d(z,self.W10,[1,1,1,1],padding="SAME")
         #64,64,3
 
 
