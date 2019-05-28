@@ -34,7 +34,7 @@ class Discriminator:
 
 
 
-    def forward_(self, X, momentum=0.5):
+    def forward(self, X, momentum=0.5):
         n_layers, use_sigmoid = 5, False
         ndf = 64
         x = Conv2D(filters=ndf, kernel_size=(4, 4), strides=2, padding='same')(X)
@@ -63,7 +63,7 @@ class Discriminator:
         logits = tf.nn.bias_add(x, self.b5)
         return logits
 
-    def forward(self, X, momentum=0.5):
+    def forward_s(self, X, momentum=0.5):
         # 1th layer
         z = conv2d(X,self.W1,[1,2,2,1],padding="SAME")  #Size 14,14,64
         #add bias
