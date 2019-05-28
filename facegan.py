@@ -35,7 +35,7 @@ class DCGAN:
         nm_imgs_train = nm_imgs[:Ntrain]
         ## name of the jpg files for the testing data
         nm_imgs_test  = nm_imgs[Ntrain:Ntrain + Ntest]
-        img_shape     = (28, 28, 3)
+        img_shape     = (32, 32, 3)
 
 
         X_train = []
@@ -99,7 +99,7 @@ class DCGAN:
             batch_Z = np.random.uniform(-1,1,(self.batch_size,self.z_shape))
 
             #Train D and store dc loss
-            batch_X = batch_X.reshape([-1,28,28,self.channels])
+            batch_X = batch_X.reshape([-1,32,32,self.channels])
             _, d_loss = self.sess.run([self.dc_train,self.dc_loss],feed_dict={self.phX:batch_X,self.phZ:batch_Z})
 
             #Create new batch for G
@@ -146,6 +146,6 @@ class DCGAN:
 
 
 if __name__ == '__main__':
-    img_shape = (28,28,3)
+    img_shape = (32,32,3)
     dcgan = DCGAN(img_shape,"samples")
     dcgan.train()

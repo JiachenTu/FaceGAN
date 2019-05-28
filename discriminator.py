@@ -63,9 +63,7 @@ class Discriminator:
         logits = tf.nn.bias_add(x, self.b5)
         return logits
 
-
-    ###simpler DisCriminator
-    def forward2(self, X, momentum=0.5):
+    def forward_simple(self, X, momentum=0.5):
         # 1th layer
         z = conv2d(X,self.W1,[1,2,2,1],padding="SAME")  #Size 14,14,64
         #add bias
