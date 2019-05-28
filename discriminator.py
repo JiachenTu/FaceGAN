@@ -36,19 +36,18 @@ class Discriminator:
 
     def forward(self, X, momentum=0.5):
         n_layers, use_sigmoid = 6, False
-        ndf = 64
+        ndf = 32
         x = Conv2D(filters=ndf, kernel_size=(4, 4), strides=2, padding='same')(X)
         x = LeakyReLU(0.2)(x)
 
-        nf_mult, nf_mult_prev = 1, 1
+        nf_mult = 1
         for n in range(n_layers):
-            nf_mult_prev, nf_mult = nf_mult, min(2**n, 8)
+            nf_mult = 2**n
             x = Conv2D(filters=ndf*nf_mult, kernel_size=(4, 4), strides=2, padding='same')(x)
             x = BatchNormalization()(x)
             x = LeakyReLU(0.2)(x)
 
-        nf_mult_prev, nf_mult = nf_mult, min(2**n_layers, 8)
-        x = Conv2D(filters=ndf*nf_mult, kernel_size=(4, 4), strides=1, padding='same')(x)
+        x = Conv2D(filters=512, kernel_size=(4, 4), strides=1, padding='same')(x)
         x = BatchNormalization()(x)
         x = LeakyReLU(0.2)(x)
 
@@ -57,9 +56,7 @@ class Discriminator:
             x = Activation('sigmoid')(x)
 
         x = Flatten()(x)
-        x = Dense(1024, activation='tanh')(x)
-        x = Dense(1, activation='sigmoid')(x)
-
+        x = Dense(1)(x)
         logits = tf.nn.bias_add(x, self.b5)
         return logits
 
