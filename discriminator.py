@@ -35,7 +35,7 @@ class Discriminator:
 
 
     def forward(self, X, momentum=0.5):
-        n_layers, use_sigmoid = 3, False
+        n_layers, use_sigmoid = 1, False
         ndf = 32
         x = Conv2D(filters=ndf, kernel_size=(4, 4), strides=2, padding='same')(X)
         x = LeakyReLU(0.2)(x)
