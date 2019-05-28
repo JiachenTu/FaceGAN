@@ -5,23 +5,6 @@ from tensorflow.layers import batch_normalization
 from tensorflow.keras.layers import UpSampling2D
 
 
-labels_in           = None          # Second input: Labels [minibatch, label_size].
-num_channels        = 3,            # Number of output color channels. Overridden based on dataset.
-resolution          = 32,           # Output resolution. Overridden based on dataset.
-label_size          = 0,            # Dimensionality of the labels, 0 if no labels. Overridden based on dataset.
-fmap_base           = 8192,         # Overall multiplier for the number of feature maps.
-fmap_decay          = 1.0,          # log2 feature map reduction when doubling the resolution.
-fmap_max            = 512,          # Maximum number of feature maps in any layer.
-latent_size         = None,         # Dimensionality of the latent vectors. None = min(fmap_base, fmap_max).
-normalize_latents   = True,         # Normalize latent vectors before feeding them to the network?
-use_wscale          = True,         # Enable equalized learning rate?
-use_pixelnorm       = False,         # Enable pixelwise feature vector normalization?
-pixelnorm_epsilon   = 1e-8,         # Constant epsilon for pixelwise feature vector normalization.
-use_leakyrelu       = True,         # True = leaky ReLU, False = ReLU.
-dtype               = 'float32',    # Data type to use for activations and outputs.
-fused_scale         = True,         # True = use fused upscale2d + conv2d, False = separate upscale2d layers.
-structure           = None,         # 'linear' = human-readable, 'recursive' = efficient, None = select automatically.
-is_template_graph   = False,        # True = template graph constructed by the Network class, False = actual evaluation.
 
 
 class Generator:
@@ -38,6 +21,24 @@ class Generator:
     def forward(self, X, momentum=0.5):
         latents_in = X                          # First input: Latent vectors [minibatch, latent_size].
         resolution_log2 = int(np.log2(resolution))
+        labels_in           = None          # Second input: Labels [minibatch, label_size].
+        num_channels        = 3,            # Number of output color channels. Overridden based on dataset.
+        resolution          = 32,           # Output resolution. Overridden based on dataset.
+        label_size          = 0,            # Dimensionality of the labels, 0 if no labels. Overridden based on dataset.
+        fmap_base           = 8192,         # Overall multiplier for the number of feature maps.
+        fmap_decay          = 1.0,          # log2 feature map reduction when doubling the resolution.
+        fmap_max            = 512,          # Maximum number of feature maps in any layer.
+        latent_size         = None,         # Dimensionality of the latent vectors. None = min(fmap_base, fmap_max).
+        normalize_latents   = True,         # Normalize latent vectors before feeding them to the network?
+        use_wscale          = True,         # Enable equalized learning rate?
+        use_pixelnorm       = False,         # Enable pixelwise feature vector normalization?
+        pixelnorm_epsilon   = 1e-8,         # Constant epsilon for pixelwise feature vector normalization.
+        use_leakyrelu       = True,         # True = leaky ReLU, False = ReLU.
+        dtype               = 'float32',    # Data type to use for activations and outputs.
+        fused_scale         = True,         # True = use fused upscale2d + conv2d, False = separate upscale2d layers.
+        structure           = None,         # 'linear' = human-readable, 'recursive' = efficient, None = select automatically.
+        is_template_graph   = False,        # True = template graph constructed by the Network class, False = actual evaluation.
+
         assert resolution == 2**resolution_log2 and resolution >= 4
         def nf(stage): return min(int(fmap_base / (2.0 ** (stage * fmap_decay))), fmap_max)
         def PN(x): return pixel_norm(x, epsilon=pixelnorm_epsilon) if use_pixelnorm else x
