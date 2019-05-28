@@ -20,7 +20,7 @@ class Generator:
 
     def forward(self, X, momentum=0.5):
         latents_in = X                          # First input: Latent vectors [minibatch, latent_size].
-        resolution_log2 = int(np.log2(resolution))
+
         labels_in           = None          # Second input: Labels [minibatch, label_size].
         num_channels        = 3,            # Number of output color channels. Overridden based on dataset.
         resolution          = 32,           # Output resolution. Overridden based on dataset.
@@ -39,6 +39,7 @@ class Generator:
         structure           = None,         # 'linear' = human-readable, 'recursive' = efficient, None = select automatically.
         is_template_graph   = False,        # True = template graph constructed by the Network class, False = actual evaluation.
 
+        resolution_log2 = int(np.log2(resolution))
         assert resolution == 2**resolution_log2 and resolution >= 4
         def nf(stage): return min(int(fmap_base / (2.0 ** (stage * fmap_decay))), fmap_max)
         def PN(x): return pixel_norm(x, epsilon=pixelnorm_epsilon) if use_pixelnorm else x
