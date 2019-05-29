@@ -10,7 +10,7 @@ import cv2
 
 
 class DCGAN:
-    def __init__(self, img_shape, sample_folder_name, iterations=15000, lr_gen=0.0002, lr_dc=0.000001, z_shape=100, batch_size=64 , beta1=0.9, sample_interval=1000):
+    def __init__(self, img_shape, sample_folder_name, iterations=300000, lr_gen=0.0002, lr_dc=0.000001, z_shape=100, batch_size=64 , beta1=0.9, sample_interval=10000):
 
         #Create sample folder
         if not os.path.exists(f"{sample_folder_name}/"):

@@ -64,26 +64,26 @@ class Discriminator:
     ###simpler DisCriminator
     def forward2(self, X, momentum=0.5):
         # 1th layer
-        z = conv2d(X,self.W1,[1,2,2,1],padding="SAME")  #Size 14,14,64
+        z = conv2d(X,self.W1,[1,2,2,1],padding="SAME")
         #add bias
         z = tf.nn.bias_add(z,self.b1)
         #Activation Function
         z = tf.nn.leaky_relu(z)
 
         # 2nd layer
-        z = conv2d(z,self.W2,[1,1,1,1],padding="SAME")  #Size 14,14,64
+        z = conv2d(z,self.W2,[1,1,1,1],padding="SAME")
         z = tf.nn.bias_add(z,self.b2)
         z = batch_normalization(z, momentum=momentum)
         z = tf.nn.leaky_relu(z)
 
         # 3th layer
-        z = conv2d(z,self.W3,[1,2,2,1],padding="SAME")  #Size 7,7,128
+        z = conv2d(z,self.W3,[1,2,2,1],padding="SAME")
         z = tf.nn.bias_add(z,self.b3)
         z = batch_normalization(z, momentum=momentum)
         z = tf.nn.leaky_relu(z)
 
         # 4th layer
-        z = conv2d(z,self.W4,[1,1,1,1],padding="SAME")  #Size 7,7,256
+        z = conv2d(z,self.W4,[1,1,1,1],padding="SAME")
         z = tf.nn.bias_add(z,self.b4)
         z = batch_normalization(z, momentum=momentum)
         z = tf.nn.leaky_relu(z)
