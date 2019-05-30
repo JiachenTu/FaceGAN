@@ -10,7 +10,7 @@ class Generator:
         with tf.variable_scope('g'):
             print("Initializing generator weights")
             # 100 = z input shape
-            self.W1 = init_weights([100,4*4*self.layer_sizes[0]])
+            self.W1 = init_weights([100,8*8*self.layer_sizes[0]])
             self.W2 = init_weights([3,3,self.layer_sizes[0], self.layer_sizes[1]])
             self.W3 = init_weights([3,3,self.layer_sizes[1], self.layer_sizes[2]])
             self.W4 = init_weights([3,3,self.layer_sizes[2], self.layer_sizes[3]])
