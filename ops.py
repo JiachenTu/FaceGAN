@@ -4,6 +4,7 @@ import tensorflow as tf
 
 def init_weights(shape):
     fan_in = np.prod(shape[:-1])
+    gain = np.sqrt(2)
     std = gain / np.sqrt(fan_in) # He init
     wscale = tf.constant(np.float32(std), name='wscale')
     return tf.get_variable('weight', shape=shape, initializer=tf.initializers.random_normal()) * wscale
