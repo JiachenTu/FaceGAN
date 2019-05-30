@@ -7,7 +7,7 @@ def init_weights(shape):
     gain = np.sqrt(2)
     std = gain / np.sqrt(fan_in) # He init
     wscale = tf.constant(np.float32(std), name='wscale')
-    return tf.get_variable('weight', shape=shape, initializer=tf.initializers.random_normal()) * wscale
+    return tf.Variable('weight', shape=shape, initializer=tf.initializers.random_normal()) * wscale
     #return tf.Variable(tf.random_normal(shape=shape,stddev=0.02))
 
 def init_bias(shape):
