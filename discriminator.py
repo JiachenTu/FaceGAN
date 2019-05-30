@@ -18,7 +18,7 @@ class Discriminator:
 
         #initialize weights and bias
         ### Variable Scope to differentiate Generator and Discriminator
-        layer_sizes = [64,64,128,256]
+        layer_sizes = [64,128,128,256]
         with tf.variable_scope('d'):
             print("Initializing discriminator weights")
             self.W1 = init_weights([5,5,channels,layer_sizes[0]])
@@ -34,7 +34,7 @@ class Discriminator:
 
 
 
-    def forward(self, X, momentum=0.5):
+    def forward2(self, X, momentum=0.5):
         n_layers, use_sigmoid = 1, False
         ndf = 32
         x = Conv2D(filters=ndf, kernel_size=(4, 4), strides=2, padding='same')(X)
@@ -62,7 +62,7 @@ class Discriminator:
 
 
     ###simpler DisCriminator
-    def forward2(self, X, momentum=0.5):
+    def forward(self, X, momentum=0.5):
         # 1th layer
         z = conv2d(X,self.W1,[1,2,2,1],padding="SAME")
         #add bias
@@ -90,7 +90,7 @@ class Discriminator:
 
         # Fully Connected Layer
         # Flatten Image
-        z = tf.reshape(z,[-1, 7*7*256])
-        logits = tf.matmul(z, self.W5)
-        logits = tf.nn.bias_add(logits, self.b5)
+        z = Flatten()(z)
+        z = Dense(1)(z)
+        logits = tf.nn.bias_add(z, self.b5)
         return logits   #Activation Function included in cost function
