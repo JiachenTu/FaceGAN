@@ -3,7 +3,11 @@ import numpy as np
 import tensorflow as tf
 
 def init_weights(shape):
-    return tf.Variable(tf.random_normal(shape=shape,stddev=0.02))
+    fan_in = np.prod(shape[:-1])
+    std = gain / np.sqrt(fan_in) # He init
+    wscale = tf.constant(np.float32(std), name='wscale')
+    return tf.get_variable('weight', shape=shape, initializer=tf.initializers.random_normal()) * wscale
+    #return tf.Variable(tf.random_normal(shape=shape,stddev=0.02))
 
 def init_bias(shape):
     return tf.Variable(tf.zeros(shape))
